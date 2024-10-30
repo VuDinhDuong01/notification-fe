@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
 
+import { AntdRegistry } from '@ant-design/nextjs-registry';
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -24,9 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="vi">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+          <AntdRegistry>{children}</AntdRegistry>
       </body>
     </html>
   );
