@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-          <AntdRegistry>{children}</AntdRegistry>
+          <AntdRegistry >{children}</AntdRegistry>
       </body>
     </html>
   );
