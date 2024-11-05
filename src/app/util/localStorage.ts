@@ -1,6 +1,6 @@
 
 
-const checkEnvironment= window !== undefined
+const checkEnvironment=typeof window !== undefined
 
 
 export const getDataFromLS=()=>{

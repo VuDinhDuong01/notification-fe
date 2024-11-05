@@ -2,15 +2,18 @@
 "use client";
 
 import { io } from "socket.io-client";
+import { getDataFromLS } from "./app/util/localStorage";
 
 let socket: any;
 
 export const initializeSocket = () => {
-    if (!socket) {
+    const name = getDataFromLS();
+    if (!socket && name) {
         socket = io("http://localhost:4000/", {
             auth: {
-                infoUser: Math.floor(Math.random() * 10),
+                infoUser: getDataFromLS(),
                 autoConnect: false,
+                reconnection: false
             },
         });
 
@@ -20,7 +23,8 @@ export const initializeSocket = () => {
 };
 
 export const disconnectSocket = () => {
-    if (socket) {
+    const name = getDataFromLS();
+    if (socket && !name) {
         socket.disconnect();
         socket = null;
     }

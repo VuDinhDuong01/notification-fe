@@ -1,55 +1,57 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Form as AntdForm, Button } from "antd";
-import { ProForm, ProFormSelect } from "@ant-design/pro-components";
+import { ProForm, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { useEffect, useMemo, useState } from "react";
 import { disconnectSocket, initializeSocket } from '@/socket'
 import axios from "axios";
+import { getDataFromLS } from "@/app/util/localStorage";
 const Form = () => {
-    const [dataForm, setDataForm]= useState(null)
-    const [users, setUsers]= useState([])
+  const [users, setUsers] = useState([])
   const handleFinish = () => {
-     const value = form.getFieldsValue();
-     setDataForm(value)
+    const value = form.getFieldsValue();
+    const payload = {
+      ...value,
+      sender_notification: getDataFromLS()
+    }
+    const socket = initializeSocket()
+    if (socket) {
+      socket.emit("form-data", payload, (value: any) => {
+        console.log("value:", value)
+      })
+    }
+
+    return () => {
+      disconnectSocket();
+    };
+
   };
   const [form] = AntdForm.useForm();
 
 
-  useEffect(()=>{
-      const socket = initializeSocket()
-      if (socket) {
-          socket.emit("form-data", dataForm, (value: any) => {
-              console.log("value:", value)
-          })
-          console.log("connected", socket.id)
-      } 
-
-      return () => {
-          disconnectSocket(); 
-      };
-  },[ dataForm])
 
 
-  useEffect(()=>{
-    const getAllUser=async()=>{
-      try{
+  useEffect(() => {
+    const getAllUser = async () => {
+      try {
         const response = await axios.get("http://localhost:4000/api/v1/user");
-        setUsers(response.data.data)
-      }catch(error:any){
-      console.log(error)
+      
+        setUsers(response.data)
+      } catch (error: any) {
+        console.log(error)
       }
     }
     getAllUser()
-  },[])
+  }, [])
 
-  const listUserSelectOption= useMemo(()=>{
-    return users.map(user=>{
+  const listUserSelectOption = useMemo(() => {
+    return users.map(user => {
       return {
-        _id: (user as any)._id,
-        username: (user as any).username
+        value: (user as any).id,
+        label: (user as any).name
       }
     })
-  },[users])
+  }, [users])
 
   return (
     <div>
@@ -61,22 +63,9 @@ const Form = () => {
           render: () => null,
         }}
       >
-        <ProFormSelect
+        <ProFormText
           name="content"
-          options={[
-            {
-              key: "9a",
-              value: "9a",
-            },
-            {
-              key: "9b",
-              value: "9b",
-            },
-            {
-              key: "9c",
-              value: "9c",
-            },
-          ]}
+          
         />
 
         <ProFormSelect
