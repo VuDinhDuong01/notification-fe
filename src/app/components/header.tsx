@@ -48,6 +48,7 @@ const Header = () => {
   useEffect(() => {
     if (socket) {
       const handleData = (data: any) => {
+        console.log("data", data)
         setNotifications((prev: any) => [ data,...prev]);
       };
       socket.on("server-form-data", handleData);
@@ -59,11 +60,11 @@ const Header = () => {
 
   useEffect(() => {
     setNotifications((data as any)?.data)
-    console.log("1234drdfd")
-  }, [data,notifications])
+  }, [data])
 
+  console.log("notifications",notifications)
 const filterViewNoti=useMemo(()=>{
-  const filterNoti = notifications?.length  === 0 ? 0  : notifications?.filter(item=>!item.check_view_notification).length
+  const filterNoti = notifications?.length  === 0 ? 0  : notifications?.filter(item=>!item.check_view_notification)?.length
   return filterNoti
 }, [notifications])
 
@@ -72,12 +73,15 @@ const updateNoti= useMutation({
   mutationFn:(body: any)=>updateNotification(body)
 })
   const handleUpdateNoti=async (item:any)=>{
+    console.log({
+      id: item.id,
+      check_view_notification:item.check_view_notification === true? false: true
+   })
     await updateNoti.mutateAsync({
        id: item.id,
-       check_view_notification: !item.check_view_notification
+       check_view_notification:item.check_view_notification === true? false: true
     },{
-      onSuccess:(data)=>{
-        console.log(data)
+      onSuccess:()=>{
         queryClient.invalidateQueries({ queryKey: ['todos'] })
       }
     })
@@ -108,7 +112,7 @@ const updateNoti= useMutation({
                       style={{ display: "flex", alignItems: "center", cursor:"pointer", background:`${!item.check_view_notification ? 'red':"black"}`, color:'blue' }}
                       onClick={()=>handleUpdateNoti(item)}
                     >
-                      <div>{item.sender_notification}</div>
+                      
                       <div>{item.content}</div>
                     </div>
                   );

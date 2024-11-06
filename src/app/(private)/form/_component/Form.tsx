@@ -5,15 +5,23 @@ import { ProForm, ProFormSelect, ProFormText } from "@ant-design/pro-components"
 import { useEffect, useMemo, useState } from "react";
 import { disconnectSocket, initializeSocket } from '@/socket'
 import axios from "axios";
+import { v4 as uuidv4 } from 'uuid';
+
+// Tạ
 import { getDataFromLS } from "@/app/util/localStorage";
 const Form = () => {
+ 
   const [users, setUsers] = useState([])
   const handleFinish = () => {
+    const id = uuidv4();
     const value = form.getFieldsValue();
     const payload = {
       ...value,
-      sender_notification: getDataFromLS()
+      sender_notification: getDataFromLS(),
+      check_view_notification:false,
+      id:id
     }
+
     const socket = initializeSocket()
     if (socket) {
       socket.emit("form-data", payload, (value: any) => {
@@ -27,8 +35,6 @@ const Form = () => {
 
   };
   const [form] = AntdForm.useForm();
-
-
 
 
   useEffect(() => {
