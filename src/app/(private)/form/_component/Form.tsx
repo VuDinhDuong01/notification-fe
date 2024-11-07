@@ -8,7 +8,7 @@ import {
 } from "@ant-design/pro-components";
 import omit from 'lodash/omit'
 import { useEffect, useMemo, useState } from "react";
-import { disconnectSocket, initializeSocket } from "@/socket";
+// import { disconnectSocket, initializeSocket } from "@/socket";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
@@ -41,15 +41,15 @@ const Form = () => {
       postNoti.mutateAsync(payload),
     ]);
 
-    const socket = initializeSocket();
-    if (socket) {
-      socket.emit("form-data", payload, (value: any) => {
-        console.log("value:", value);
-      });
-    }
-    return () => {
-      disconnectSocket();
-    };
+    // const socket = initializeSocket();
+    // if (socket) {
+    //   socket.emit("form-data", payload, (value: any) => {
+    //     console.log("value:", value);
+    //   });
+    // }
+    // return () => {
+    //   disconnectSocket();
+    // };
   };
   const [form] = AntdForm.useForm();
 

@@ -52,7 +52,6 @@ const Header = () => {
   useEffect(() => {
     if (socket) {
       const handleData = (data: any) => {
-        console.log("data", data)
         setNotifications((prev: any) => [data, ...prev]);
       };
       socket.on("server-form-data", handleData);
