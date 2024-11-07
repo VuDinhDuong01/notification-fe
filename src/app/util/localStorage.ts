@@ -1,8 +1,7 @@
 
-'use client'
-const checkEnvironment=typeof window !== undefined
-
-
-export const getDataFromLS=()=>{
-    return checkEnvironment &&  localStorage.getItem("user_id")
-}
+export const getDataFromLS = () => {
+    if (typeof window !== "undefined") {
+        return localStorage.getItem("user_id");
+    }
+    return null;
+};

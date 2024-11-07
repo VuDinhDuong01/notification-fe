@@ -10,8 +10,13 @@ import Link from "next/link";
 import { getDataFromLS } from "../util/localStorage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { filterNotification, updateNotification } from "../util/api/query";
-
 const Header = () => {
+  const [userId, setUserId] = useState<string  | null>("");
+
+  useEffect(() => {
+    const user_id = getDataFromLS()
+    setUserId(user_id);
+  }, []);
   const queryClient = useQueryClient()
   const [notifications, setNotifications] = useState<any[]>([]);
   type MenuItem = Required<MenuProps>["items"][number];
@@ -36,12 +41,11 @@ const Header = () => {
   const onClick: MenuProps["onClick"] = (e) => {
     setCurrent(e.key);
   };
-  const id = getDataFromLS()
-
+  
   const { data } = useQuery({
     queryKey: ['todos'],
-    queryFn: () => filterNotification({ id }),
-    enabled: Boolean(id)
+    queryFn: () => filterNotification({ id:userId}),
+    enabled: Boolean(userId)
   })
 
   const socket = initializeSocket();
@@ -103,7 +107,7 @@ const Header = () => {
                 return (
                   <div
                     key={index}
-                    style={{ display: "flex", alignItems: "center", cursor: "pointer", background: `${!item.check_view_notification ? 'red' : "black"}`, color: 'blue' }}
+                    style={{ display: "flex", alignItems: "center", cursor: "pointer", background: `${!item.check_view_notification ? 'blue' : "black"}`, color: 'white' }}
                     onClick={() => handleUpdateNoti(item)}
                   >
 
@@ -122,7 +126,7 @@ const Header = () => {
             <BellFilled />
           </Badge>
         </Popover>
-        <h3>{id === '1' ? "duong" : "long"}</h3>
+        <h3>{userId === "1"  ? "DUONG":"LONG"}</h3>
       </div>
     </div>
   );

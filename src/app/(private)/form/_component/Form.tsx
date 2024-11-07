@@ -13,7 +13,6 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
-// Tạ
 import { getDataFromLS } from "@/app/util/localStorage";
 import { postForm, postNotification } from "@/app/util/api/query";
 const Form = () => {
@@ -58,7 +57,6 @@ const Form = () => {
     const getAllUser = async () => {
       try {
         const response = await axios.get("http://localhost:8000/api/v1/user");
-
         setUsers(response.data);
       } catch (error: any) {
         console.log(error);
