@@ -13,3 +13,14 @@ export const filterNotification=(data: any)=>{
         ...API_URL.getNoti(), data, params:""
     })
 }
+
+export const postForm=(data: any)=>{
+    return callAPI({
+        ...API_URL.postForm(), data, params:""
+    })
+}
+export const postNotification=(data: any)=>{
+    return callAPI({
+        ...API_URL.postNotification(), data, params:""
+    })
+}

@@ -58,5 +58,11 @@ export const API_URL = {
         method: "PUT",
       headers: HEADERS.header(),
       endPoint: "/api/v1/notification",
-    })
+    }),
+    postNotification:()=>({
+        method: "POST",
+      headers: HEADERS.header(),
+      endPoint: "/api/v1/notification",
+    }),
+
 };

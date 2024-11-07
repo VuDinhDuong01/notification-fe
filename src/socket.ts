@@ -9,7 +9,7 @@ let socket: any;
 export const initializeSocket = () => {
     const name = getDataFromLS();
     if (!socket && name) {
-        socket = io("http://localhost:4000/", {
+        socket = io("http://localhost:8000/", {
             auth: {
                 infoUser: getDataFromLS(),
                 autoConnect: false,

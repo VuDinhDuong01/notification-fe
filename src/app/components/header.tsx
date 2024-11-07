@@ -36,20 +36,20 @@ const Header = () => {
   const onClick: MenuProps["onClick"] = (e) => {
     setCurrent(e.key);
   };
-  const id= getDataFromLS()
+  const id = getDataFromLS()
 
-  const {  data }= useQuery({ 
-    queryKey: ['todos'], 
-    queryFn: ()=>filterNotification({id}), 
-    enabled:Boolean(id)
-})
+  const { data } = useQuery({
+    queryKey: ['todos'],
+    queryFn: () => filterNotification({ id }),
+    enabled: Boolean(id)
+  })
 
   const socket = initializeSocket();
   useEffect(() => {
     if (socket) {
       const handleData = (data: any) => {
         console.log("data", data)
-        setNotifications((prev: any) => [ data,...prev]);
+        setNotifications((prev: any) => [data, ...prev]);
       };
       socket.on("server-form-data", handleData);
       return () => {
@@ -62,26 +62,20 @@ const Header = () => {
     setNotifications((data as any)?.data)
   }, [data])
 
-  console.log("notifications",notifications)
-const filterViewNoti=useMemo(()=>{
-  const filterNoti = notifications?.length  === 0 ? 0  : notifications?.filter(item=>!item.check_view_notification)?.length
-  return filterNoti
-}, [notifications])
+  const filterViewNoti = useMemo(() => {
+    return  notifications?.length === 0 ? 0 : notifications?.filter(item => !item.check_view_notification)?.length
+  }, [notifications])
 
 
-const updateNoti= useMutation({
-  mutationFn:(body: any)=>updateNotification(body)
-})
-  const handleUpdateNoti=async (item:any)=>{
-    console.log({
-      id: item.id,
-      check_view_notification:item.check_view_notification === true? false: true
-   })
+  const updateNoti = useMutation({
+    mutationFn: (body: any) => updateNotification(body)
+  })
+  const handleUpdateNoti = async (item: any) => {
     await updateNoti.mutateAsync({
-       id: item.id,
-       check_view_notification:item.check_view_notification === true? false: true
-    },{
-      onSuccess:()=>{
+      id: item.id,
+      check_view_notification: item.check_view_notification === true ? false : true
+    }, {
+      onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['todos'] })
       }
     })
@@ -106,28 +100,29 @@ const updateNoti= useMutation({
           content={
             notifications?.length > 0
               ? notifications.map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      style={{ display: "flex", alignItems: "center", cursor:"pointer", background:`${!item.check_view_notification ? 'red':"black"}`, color:'blue' }}
-                      onClick={()=>handleUpdateNoti(item)}
-                    >
-                      
-                      <div>{item.content}</div>
-                    </div>
-                  );
-                })
+                return (
+                  <div
+                    key={index}
+                    style={{ display: "flex", alignItems: "center", cursor: "pointer", background: `${!item.check_view_notification ? 'red' : "black"}`, color: 'blue' }}
+                    onClick={() => handleUpdateNoti(item)}
+                  >
+
+                    <div>{item.content}</div>
+                  </div>
+                );
+              })
               : "K CÓ THÔNG BÁO NÀO"
           }
           trigger="click"
         >
           <Badge
             count={filterViewNoti}
-            // overflowCount={9}
+          // overflowCount={9}
           >
             <BellFilled />
           </Badge>
         </Popover>
+        <h3>{id === '1' ? "duong" : "long"}</h3>
       </div>
     </div>
   );

@@ -19,7 +19,7 @@ export class validateError extends Error {
   }
 }
 const axiosInstance = axios.create({
-  baseURL:"http://localhost:4000",
+  baseURL:"http://localhost:8000",
   timeout: 15000,
   // responseEncoding: "utf8",
   maxRedirects: 5,
@@ -49,7 +49,7 @@ export const callAPI = async ({
   data,
   headers,
   endPoint,
-  baseURL = "http://localhost:4000",
+  baseURL = "http://localhost:8000",
 }: apiProps): Promise<any> => {
   try {
     const res = await axiosInstance<any>({
