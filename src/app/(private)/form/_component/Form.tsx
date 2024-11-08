@@ -6,15 +6,15 @@ import {
   ProFormSelect,
   ProFormText,
 } from "@ant-design/pro-components";
-import omit from 'lodash/omit'
 import { useEffect, useMemo, useState } from "react";
-// import { disconnectSocket, initializeSocket } from "@/socket";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
 import { getDataFromLS } from "@/app/util/localStorage";
-import { postForm, postNotification } from "@/app/util/api/query";
+import { postForm } from "@/app/util/api/query";
+import { decodeJWT } from "@/app/util/decodeJWT";
+
 const Form = () => {
   const [users, setUsers] = useState([]);
 
@@ -22,34 +22,17 @@ const Form = () => {
     mutationFn: (body: any) => postForm(body),
   });
 
-  const postNoti = useMutation({
-    mutationFn: (body: any) => postNotification(body),
-  });
-
+  const decodeToken = decodeJWT(getDataFromLS() as string ) as {user_id : string }
   const handleFinish = async () => {
     const id = uuidv4();
     const value = form.getFieldsValue();
     const payload = {
       ...value,
-      sender_notification: getDataFromLS(),
+      sender_notification: decodeToken.user_id,
       check_view_notification: false,
       id: id,
     };
-
-    await Promise.all([
-      postFormMutation.mutateAsync(omit(payload, ["id"])),
-      postNoti.mutateAsync(payload),
-    ]);
-
-    // const socket = initializeSocket();
-    // if (socket) {
-    //   socket.emit("form-data", payload, (value: any) => {
-    //     console.log("value:", value);
-    //   });
-    // }
-    // return () => {
-    //   disconnectSocket();
-    // };
+    await  postFormMutation.mutateAsync(payload)
   };
   const [form] = AntdForm.useForm();
 

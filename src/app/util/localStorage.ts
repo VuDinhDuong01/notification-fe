@@ -1,7 +1,6 @@
 
 export const getDataFromLS = () => {
     if (typeof window !== "undefined") {
-        return localStorage.getItem("user_id");
+        return  localStorage.getItem("token");
     }
-    return null;
 };

@@ -10,13 +10,13 @@ import Link from "next/link";
 import { getDataFromLS } from "../util/localStorage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { filterNotification, updateNotification } from "../util/api/query";
+import { decodeJWT } from "../util/decodeJWT";
 const Header = () => {
-  const [userId, setUserId] = useState<string  | null>("");
-
+  const [userId, setUserId] = useState<number  | null>(1);
+  const decodeToken = decodeJWT(getDataFromLS() as string ) as { user_id: number } 
   useEffect(() => {
-    const user_id = getDataFromLS()
-    setUserId(user_id);
-  }, []);
+    setUserId(decodeToken?.user_id);
+  }, [decodeToken]);
   const queryClient = useQueryClient()
   const [notifications, setNotifications] = useState<any[]>([]);
   type MenuItem = Required<MenuProps>["items"][number];
@@ -44,11 +44,25 @@ const Header = () => {
   
   const { data } = useQuery({
     queryKey: ['todos'],
-    queryFn: () => filterNotification({ id:userId}),
+    queryFn: () => filterNotification({ id: decodeToken.user_id}),
     enabled: Boolean(userId)
   })
 
+
+
   const socket = initializeSocket();
+
+  useEffect(()=>{
+    if(socket){
+      socket.on('connect_error', (error:any) => {
+        console.error('Connection error:', error.message);
+        // Xử lý lỗi: Ví dụ như logout, hiển thị thông báo lỗi, v.v.
+       
+      });
+    }
+   
+  },[socket])
+  
   useEffect(() => {
     if (socket) {
       const handleData = (data: any) => {
@@ -125,7 +139,7 @@ const Header = () => {
             <BellFilled />
           </Badge>
         </Popover>
-        <h3>{userId === "1"  ? "DUONG":"LONG"}</h3>
+        <h3>{userId === 1  ? "DUONG":"LONG"}</h3>
       </div>
     </div>
   );
